@@ -1,1 +1,567 @@
-<!doctype html><html lang="tr"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Boyun Manipülasyonu Kodlama</title><style>body{font:16px system-ui;max-width:700px;margin:8vh auto;padding:24px;color:#203346;background:#eef2f6}main{background:white;padding:28px;border-radius:12px}a{display:block;padding:14px;margin:10px;background:#e3eff9;border-radius:7px;color:#164b7c;font-weight:bold}aside{background:#fff0c2;padding:14px}</style><main><h1>Boyun Manipülasyonu YouTube Kodlaması</h1><h2>Ön pilot</h2><a href="pilot_k1.html">Pilot — Kodlayıcı 1</a><a href="pilot_k2.html">Pilot — Kodlayıcı 2</a><h2>Ana kodlama</h2><a href="k1.html">Ana kodlama — Kodlayıcı 1</a><a href="k2.html">Ana kodlama — Kodlayıcı 2</a><aside>Yalnız kendi formunuzu açın. Veriler bu bilgisayardaki tarayıcıda saklanır; her oturum sonunda CSV indirin.</aside></main></html>
+<!doctype html><html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style><title>Boyun Kütletme Kodlama Kılavuzu</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,500;7..72,650&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Yerleşim: solda yapışkan içindekiler, sağda tek sütun okuma metni; dar ekranda içindekiler üste iner */
+:root{
+  --bg:#f3f5f6; --paper:#ffffff; --ink:#1b2a33; --muted:#566874; --line:#d7dfe3;
+  --accent:#145c6e; --accent-soft:#e1eff2; --warn:#8a5a00; --warn-soft:#fff3d6;
+  --cA:#2f7a46; --cA-soft:#e3f2e7; --cB:#9a6200; --cB-soft:#fbefd6;
+  --cC:#b5462a; --cC-soft:#fbe5df; --cD:#8c2d6b; --cD-soft:#f6e2ef;
+  --f-display:"Literata",Georgia,"Times New Roman",serif;
+  --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#12191d; --paper:#1a2328; --ink:#e3eaee; --muted:#9db0ba; --line:#2f3d44;
+  --accent:#6cc3d6; --accent-soft:#1d3640; --warn:#f0c066; --warn-soft:#3a2f17;
+  --cA:#7fd09a; --cA-soft:#1d3426; --cB:#f0c066; --cB-soft:#3a2f17;
+  --cC:#f2957b; --cC-soft:#3d2219; --cD:#e59bcb; --cD-soft:#3a1f31; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12191d; --paper:#1a2328; --ink:#e3eaee; --muted:#9db0ba; --line:#2f3d44;
+  --accent:#6cc3d6; --accent-soft:#1d3640; --warn:#f0c066; --warn-soft:#3a2f17;
+  --cA:#7fd09a; --cA-soft:#1d3426; --cB:#f0c066; --cB-soft:#3a2f17;
+  --cC:#f2957b; --cC-soft:#3d2219; --cD:#e59bcb; --cD-soft:#3a1f31; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:16px/1.6 var(--f-body)}
+.wrap{max-width:1180px;margin:0 auto;padding-block:28px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;grid-template-columns:230px minmax(0,1fr);gap:36px}
+nav.toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + 20px);align-self:start;max-height:calc(100vh - 40px);overflow:auto;font-size:14px}
+nav.toc p{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+nav.toc ol{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+nav.toc a{display:block;padding:4px 8px;border-radius:6px;color:var(--ink);text-decoration:none}
+nav.toc a:hover,nav.toc a:focus-visible{background:var(--accent-soft);outline:none}
+nav.toc .sub a{padding-left:20px;color:var(--muted)}
+main{min-width:0}
+header.top{margin-bottom:28px}
+.eyebrow{font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);font-weight:600}
+h1{font-family:var(--f-display);font-weight:650;font-size:clamp(28px,4vw,40px);line-height:1.15;margin:6px 0 10px;text-wrap:balance}
+h2{font-family:var(--f-display);font-weight:650;font-size:25px;line-height:1.25;margin:0 0 14px;text-wrap:balance}
+h3{font-size:17px;font-weight:600;margin:22px 0 8px}
+.meta{color:var(--muted);font-size:14px;margin:0}
+section{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:26px clamp(18px,3vw,32px);margin-bottom:22px;scroll-margin-top:16px}
+p,li{max-width:70ch}
+p{margin:0 0 12px}
+ul,ol{margin:0 0 12px;padding-left:22px}
+li{margin-bottom:5px}
+a{color:var(--accent)}
+code,.mono{font-family:var(--f-mono);font-size:.88em}
+.note{background:var(--warn-soft);border-left:4px solid var(--warn);padding:12px 16px;border-radius:0 8px 8px 0;margin:14px 0}
+.note b:first-child{color:var(--warn)}
+.tip{background:var(--accent-soft);padding:12px 16px;border-radius:8px;margin:14px 0}
+.tbl{overflow-x:auto;margin:10px 0 16px;border:1px solid var(--line);border-radius:8px}
+table{border-collapse:collapse;width:100%;font-size:14.5px;line-height:1.45}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--line)}
+th{background:var(--accent-soft);font-weight:600;font-size:13.5px}
+tr:last-child td{border-bottom:0}
+td.k{font-family:var(--f-mono);white-space:nowrap;font-size:13.5px}
+.chip{display:inline-block;font-family:var(--f-mono);font-size:12.5px;padding:1px 7px;border-radius:5px;font-weight:500;white-space:nowrap}
+.cA{background:var(--cA-soft);color:var(--cA)} .cB{background:var(--cB-soft);color:var(--cB)}
+.cC{background:var(--cC-soft);color:var(--cC)} .cD{background:var(--cD-soft);color:var(--cD)}
+.cZ{background:var(--accent-soft);color:var(--accent)}
+.classhead{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin:22px 0 4px}
+.classhead h3{margin:0}
+.classhead span{color:var(--muted);font-size:14px}
+.steps{counter-reset:s;list-style:none;padding:0}
+.steps>li{counter-increment:s;position:relative;padding-left:38px;margin-bottom:12px}
+.steps>li::before{content:counter(s);position:absolute;left:0;top:1px;width:26px;height:26px;border-radius:50%;background:var(--accent);color:var(--paper);font-size:13px;font-weight:600;display:grid;place-items:center}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.card{border:1px solid var(--line);border-radius:8px;padding:14px 16px}
+.card h4{margin:0 0 6px;font-size:15px}
+.card p,.card ul{font-size:14.5px;margin-bottom:6px}
+.search{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:6px 0 4px}
+.search input{font:inherit;padding:8px 12px;border:1px solid var(--line);border-radius:7px;background:var(--bg);color:var(--ink);width:min(100%,360px)}
+.search input:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.search small{color:var(--muted)}
+.ex{font-family:var(--f-mono);font-size:13.5px;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:10px 12px;white-space:pre-wrap;overflow-x:auto}
+.formline{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 10px}
+.formline span{border:1px solid var(--line);border-radius:5px;padding:2px 8px;font-size:13.5px;background:var(--bg)}
+.ok{color:var(--cA);font-weight:600} .no{color:var(--cC);font-weight:600}
+.forms{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:18px}.forms a{display:block;padding:12px 16px;border-radius:9px;text-decoration:none;border:1px solid var(--line);background:var(--paper);color:var(--ink)}.forms a b{display:block;color:var(--accent);font-size:16px}.forms a span{font-size:13.5px;color:var(--muted)}.forms a.now{border-color:var(--accent);background:var(--accent-soft)}.forms a:hover,.forms a:focus-visible{border-color:var(--accent);outline:none}
+@media (max-width:860px){
+  .wrap{grid-template-columns:minmax(0,1fr);gap:16px}
+  nav.toc{position:static;max-height:none;background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:14px}
+  nav.toc ol{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+  nav.toc .sub{display:none}
+}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+</style></head><body>
+
+<div class="wrap">
+<nav class="toc" aria-label="İçindekiler">
+  <p>İçindekiler</p>
+  <ol>
+    <li><a href="#baslamadan">Başlamadan önce</a></li>
+    <li><a href="#form">Formu kullanmak</a></li>
+    <li><a href="#izleme">İzleme kuralları</a></li>
+    <li><a href="#s61">6.1 Uygunluk</a></li>
+    <li><a href="#s62">6.2 Uygulayıcı</a></li>
+    <li><a href="#s63">6.3 Video türü</a></li>
+    <li><a href="#s64">6.4 Gösteri öğeleri</a></li>
+    <li><a href="#s65">6.5 Güvenlik</a></li>
+    <li><a href="#s66">6.6 Ticari yönlendirme</a></li>
+    <li><a href="#s67">6.7 Vaatler</a></li>
+    <li class="sub"><a href="#vaatliste">Vaat listesi</a></li>
+    <li class="sub"><a href="#sinirda">Sınırda durumlar</a></li>
+    <li><a href="#s68">6.8 mDISCERN</a></li>
+    <li><a href="#s69">6.9 JAMA</a></li>
+    <li><a href="#s610">6.10 GQS</a></li>
+    <li><a href="#s611">6.11 Açıklama</a></li>
+    <li><a href="#ornek">Baştan sona örnek</a></li>
+    <li><a href="#kart">Hızlı başvuru kartı</a></li>
+    <li><a href="#kanit">Kanıt haritası</a></li>
+  </ol>
+</nav>
+
+<main>
+<header class="top">
+  <div class="eyebrow">Türkçe YouTube · Boyun manipülasyonu · Kodlayıcılar için</div>
+  <h1>Boyun Kütletme Videoları Kodlama Kılavuzu</h1>
+  <p class="meta">Kılavuz v1.2'nin ayrıntılı ekran sürümü · 29.10.2026 · Kodlayıcı 1: Dr. Öğr. Üyesi Cem Zafer Yıldır · Kodlayıcı 2: Uzm. Dr. Mehmet Ercan</p>
+  <div class="forms" aria-label="Kodlama formları"><a class="now" href="https://cecenvk.github.io/boyun-manipulasyon-kodlama/pilot_k1.html" target="_blank" rel="noopener"><b>Pilot — Kodlayıcı 1</b><span>Cem Zafer Yıldır · 15 video</span></a><a class="now" href="https://cecenvk.github.io/boyun-manipulasyon-kodlama/pilot_k2.html" target="_blank" rel="noopener"><b>Pilot — Kodlayıcı 2</b><span>Mehmet Ercan · 15 video</span></a><a href="https://cecenvk.github.io/boyun-manipulasyon-kodlama/k1.html" target="_blank" rel="noopener"><b>Ana kodlama — K1</b><span>261 video · pilot ve v2.0 sonrası</span></a><a href="https://cecenvk.github.io/boyun-manipulasyon-kodlama/k2.html" target="_blank" rel="noopener"><b>Ana kodlama — K2</b><span>261 video · pilot ve v2.0 sonrası</span></a></div>
+  <p class="meta" style="margin-top:10px">Yalnız kendi formunuzu açın. Form yeni sekmede açılır; bu kılavuz açık kalır.</p>
+</header>
+
+<section id="baslamadan">
+  <h2>Başlamadan önce</h2>
+  <p>Bu çalışmada Türkçe YouTube'daki boyun manipülasyonu ("kütletme", "kayropraktik", "omur yerine oturtma") videolarında <b>hangi vaatlerin verildiğini</b>, bunların ne kadarının bilimsel kanıtın dışında kaldığını, vaatleri kimin verdiğini ve risklerin anlatılıp anlatılmadığını inceliyoruz. Ana değişken videonun genel kalitesi değil, <b>videoda geçen her bir vaattir</b>.</p>
+  <div class="grid2">
+    <div class="card"><h4>Ön pilot: 15 video</h4><p>Ana örneklemin dışından seçildi, analize girmez. Amaç vaat listesinde eksik kalan maddeyi ve işlemeyen kuralı bulmaktır. Pilottan sonra kılavuz bir kez güncellenir (v2.0) ve dondurulur.</p></div>
+    <div class="card"><h4>Ana kodlama: 261 video</h4><p>8 Türkçe arama terimi × ilk 50 sonuç, 25.10.2026'da donduruldu. Çoğu Shorts (10–60 sn). Video başına yaklaşık 2 dk; kişi başı 8–10 saat, birkaç güne bölünebilir.</p></div>
+    <div class="card"><h4>Bağımsız ve kör</h4><p>İki kodlayıcı birbirine danışmadan kodlar. İzlenme ve beğeni sayısı formda gösterilmez; YouTube sayfasına giderseniz de bunlara ve yorumlara bakmayın.</p></div>
+    <div class="card"><h4>Sonra uzlaşı</h4><p>Farklı kodlanan maddeler kanıt alıntılarıyla yan yana konur, birlikte karar verilir. Bu yüzden her vaat için yazdığınız alıntı çok önemlidir.</p></div>
+  </div>
+  <div class="note"><b>Üç temel ilke.</b>
+    <ul>
+      <li><b>Görmediğiniz şey yok sayılır.</b> "Herhalde söylemiştir", "herhalde fizyoterapisttir" diye tahmin etmeyin.</li>
+      <li><b>Kuralda olmayan durumda kural uydurmayın.</b> En yakın seçeneği işaretleyin, kararsızlığınızı 6.11 Açıklama kutusuna yazın; uzlaşı turunda birlikte karar verilir.</li>
+      <li><b>Vaat sınıfını siz seçmezsiniz.</b> Siz yalnız videoda geçen ifadeyi listeden işaretlersiniz; A/B/C/D sınıfını form arka planda kanıt haritasına göre atar.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="form">
+  <h2>Formu kullanmak</h2>
+  <p>Form bir web bağlantısıyla açılır, kurulum gerekmez. Bilgisayarda Chrome önerilir; ekran geniş olduğunda üç sütun yan yana görünür. Herkes yalnız <b>kendi</b> formunu açar.</p>
+  <div class="tbl"><table>
+    <tr><th>Form</th><th>Bağlantı</th></tr>
+    <tr><td>Pilot — Kodlayıcı 1 (CZY)</td><td><a href="https://cecenvk.github.io/boyun-manipulasyon-kodlama/pilot_k1.html" target="_blank" rel="noopener">…/pilot_k1.html</a></td></tr>
+    <tr><td>Pilot — Kodlayıcı 2 (Mehmet Ercan)</td><td><a href="https://cecenvk.github.io/boyun-manipulasyon-kodlama/pilot_k2.html" target="_blank" rel="noopener">…/pilot_k2.html</a></td></tr>
+    <tr><td>Ana kodlama — K1 / K2</td><td>Pilot ve kılavuz v2.0'dan sonra: <span class="mono">…/k1.html</span> · <span class="mono">…/k2.html</span></td></tr>
+  </table></div>
+
+  <h3>Ekranın üç bölümü</h3>
+  <div class="grid2">
+    <div class="card"><h4>Solda: video listesi</h4><p>Her satırda sıra no, durum işareti, başlık ve kanal.</p>
+      <p><span class="mono">○</span> kodlanmadı · <span class="mono">◐</span> yarım · <span class="mono">●</span> tamam · <span class="mono">✕</span> hariç</p></div>
+    <div class="card"><h4>Ortada: video</h4><p>Oynatıcı, süre, yükleme tarihi, Shorts etiketi. Altında <b>"Video açıklaması"</b> kutusu var: açın, vaatler ve kaynaklar çoğu zaman buradadır. Video oynamazsa "YouTube'da aç".</p></div>
+    <div class="card"><h4>Sağda: sorular</h4><p>Bütün sorular alt alta, baştan görünür. Sırayla gitmek zorunda değilsiniz; izlerken gördüğünüz anda işaretleyin. Her sorunun yanındaki <b>(?)</b> işaretinin üzerine gelince kısa kural çıkar.</p></div>
+  </div>
+
+  <h3>Kayıt ve teslim</h3>
+  <ol class="steps">
+    <li><b>Kayıt otomatiktir</b>, ama yalnız <b>aynı bilgisayarda ve aynı tarayıcıda</b>. Gizli pencere kullanmayın. Üstte kırmızı "Tarayıcı kaydı çalışmıyor" yazısı çıkarsa sık sık CSV indirin.</li>
+    <li>Her oturumun sonunda üstteki <b>"CSV indir"</b> düğmesine basın. Dosya adı kendiliğinden oluşur: <code>BOYUN_pilot_kodlama_K2_20261030_2145.csv</code>. Bu dosya hem yedek hem teslim dosyasıdır.</li>
+    <li>Sarı <b>"Son CSV'den sonra değişiklik var"</b> yazısı, indirmediğiniz değişiklik olduğunu gösterir.</li>
+    <li>Başka bilgisayara geçerseniz ya da tarayıcı verisi silinirse <b>"Yedekten geri yükle"</b> ile son CSV'yi yükleyin; kaldığınız yerden devam edersiniz. Form başka kodlayıcının ya da başka form türünün (pilot/ana) CSV'sini kabul etmez.</li>
+    <li>Bitince son CSV'yi CZY'ye gönderin.</li>
+  </ol>
+
+  <h3>"Eksik" kutusu</h3>
+  <p>Formun en altındaki kutu, o videoda doldurulmamış zorunlu alanları sayar. Hepsi dolunca "Zorunlu alanlar tamam" yazar ve listede <span class="mono">●</span> görünür. Form şu tutarsızlıkları da yakalar:</p>
+  <ul>
+    <li>Bir vaat işaretlenmiş ama <b>kanıt kutusu boş</b> → eksik sayılır.</li>
+    <li>Ses yorumu <b>"Yanlış"</b> ama <b>"Ses başarının göstergesi"</b> vaadi işaretlenmemiş → uyarır.</li>
+    <li>C ya da D sınıfı vaat ya da <b>"Tehlikeli öneri"</b> var ama <b>GQS 3 ya da üstü</b> → "GQS en fazla 2 olabilir" uyarısı.</li>
+    <li>Gösteri, Güvenlik ve Ticari gruplarının her birinde <b>en az bir</b> seçim gerekir; hiçbir şey yoksa "Hiçbiri" ya da "Yok" seçilir.</li>
+  </ul>
+</section>
+
+<section id="izleme">
+  <h2>İzleme kuralları</h2>
+  <ul>
+    <li>Her video <b>baştan sona</b> izlenir. Kısa videolar (Shorts) <b>en az iki kez</b> izlenir: bir kez sesi dinleyerek, bir kez ekrandaki yazılara bakarak. Ekran yazıları vaadin en sık geçtiği yerdir.</li>
+    <li><b>Vaat kaynağı sayılanlar:</b> başlık, ekran yazısı, konuşma, video açıklaması ve kanalın <b>sabitlenmiş</b> yorumu. <b>Sayılmayan:</b> izleyici yorumları.</li>
+    <li>Hasta tanıklığı ("kulağım açıldı") da uygulayıcının yayımladığı içerikte geçtiği için vaat sayılır.</li>
+    <li>Video formdaki oynatıcıda izlenir. YouTube sayfasına giderseniz izlenme sayısına, beğenilere ve yorumlara bakmayın.</li>
+    <li>Gördüğünüz anda işaretleyin, video bitince bütün cevaplara bir kez göz atın. Videonun sonunda söylenen bir şey (uyarı, fiyat, kaynak) bir cevabı değiştirebilir.</li>
+  </ul>
+  <div class="tip"><b>Pratik akış (Shorts için ~2 dk):</b> başlık ve açıklamayı okuyun → 1. izleme sesli, vaat ve tepkileri işaretleyin → 2. izleme yazılara bakarak, eksik vaatleri ekleyin → uygulayıcı, tür, güvenlik, ticari → mDISCERN, JAMA, GQS → eksik kutusuna bakın.</div>
+</section>
+
+<section id="s61">
+  <h2>6.1 Uygunluk</h2>
+  <div class="formline"><span>Dahil mi?</span><span>Evet</span><span>Hayır</span></div>
+  <p><b>Temel soru:</b> Videoda <b>boyuna kütletme / itme (thrust) uygulaması gösteriliyor ya da anlatılıyor mu?</b> Konu dışı video çoğu zaman ilk saniyelerde anlaşılır; tamamını izlemeniz gerekmez.</p>
+  <p>"Hayır" seçince <b>Hariç nedeni</b> çıkar ve altındaki sorular gizlenir (verdiğiniz cevaplar silinmez; "Evet"e dönerseniz geri gelir).</p>
+  <div class="tbl"><table>
+    <tr><th>Formdaki hariç nedeni</th><th>Ne zaman</th><th>Örnek</th></tr>
+    <tr><td>Boyun manipülasyonu yok</td><td>Yalnız egzersiz, germe, masaj, mobilizasyon ya da cihaz; kütletme gösterilmiyor ve anlatılmıyor</td><td>"Boyun düzleşmesi için 3 egzersiz"</td></tr>
+    <tr><td>Yalnız başka bölge</td><td>Bel, sırt, kulunç (torakal), parmak, çene ya da yalnız tüm vücut; boyun yok</td><td>Sırt üstü yatan hastada yalnız torakal kütletme</td></tr>
+    <tr><td>Kırık, çıkık ya da cerrahi</td><td>Kırık/çıkık redüksiyonu, ameliyat anlatımı</td><td>Klavikula kırığı</td></tr>
+    <tr><td>Alet/ürün denemesi</td><td>Kütletme aleti denemesi, boyuna elle uygulama yok</td><td>"Kütletme aletini denedim". <i>Alet boyuna uygulanıp vaat veriliyorsa <b>dahil</b>.</i></td></tr>
+    <tr><td>Sessiz/yazısız</td><td>Hiç ses ya da yazı yok, vaat yok <b>ve</b> uygulayıcı belirlenemiyor (üçü birden)</td><td>Yalnız müzik eşliğinde 8 saniyelik kütletme, kanal adı bilgisiz</td></tr>
+    <tr><td>Türkçe değil</td><td>Türkçe konuşma da Türkçe ekran yazısı/başlık da yok. Yalnız Türkçe etiket (#boyunkütletme) <b>yetmez</b></td><td>Yabancı kayropraktör kanalı, başlık İngilizce</td></tr>
+    <tr><td>Video açılmıyor</td><td>Kaldırılmış, gizli, yaş sınırlı vb.</td><td>—</td></tr>
+    <tr><td>Diğer</td><td>Yukarıdakilere uymayan; nedeni <b>Açıklama</b>ya yazmak zorunlu</td><td>—</td></tr>
+  </table></div>
+  <h3>Dahil edilen sınır durumlar</h3>
+  <ul>
+    <li><b>Karışık videolar:</b> Tüm vücut kayropraktik videosunda boyun da kütletiliyorsa <b>dahil</b>. Vaatler videonun tamamından kodlanır (izleyici vaadi bölgeye ayırmaz).</li>
+    <li><b>Mizah / eğlence:</b> Boyun kütletme gösteriliyorsa <b>dahil</b>; türü 6.3'te "Eğlence" olarak kodlanır.</li>
+    <li><b>Uyarı videoları:</b> "Boyun kütletmek tehlikeli mi?" gibi, manipülasyonu <b>anlatan</b> videolar dahil; türü "Uyarı / eleştiri".</li>
+    <li><b>Kendi boynunu kütleten kişi:</b> dahil; tür "Kendi kendine öğretim" ya da "Eğlence".</li>
+  </ul>
+</section>
+
+<section id="s62">
+  <h2>6.2 Uygulayıcı</h2>
+  <div class="formline"><span>Uygulayıcı (tek seçim, 1–8)</span><span>GETAT / kayropraktik sertifikası / Bakanlık onayı anılıyor mu? Evet · Hayır</span></div>
+  <p><b>Boyun manipülasyonunu kim yapıyor ya da anlatıyor?</b> Uygulayan ve anlatan farklıysa <b>uygulayan</b> esas alınır. Unvan videoda, açıklamada ya da kanal adında yazıyorsa kabul edilir.</p>
+  <div class="tbl"><table>
+    <tr><th>No</th><th>Formdaki seçenek</th><th>Ne zaman</th></tr>
+    <tr><td class="k">1</td><td>Hekim — FTR</td><td>"Fiziksel Tıp ve Rehabilitasyon", "FTR uzmanı", "fizik tedavi uzmanı Dr."</td></tr>
+    <tr><td class="k">2</td><td>Hekim — diğer branş</td><td>Ortopedi, nöroşirürji, algoloji, aile hekimi vb.</td></tr>
+    <tr><td class="k">3</td><td>Hekim — branş belirsiz</td><td>Tıp hekimi olduğu belli ("Uzm. Dr.", hastane künyesi), branş yazmıyor</td></tr>
+    <tr><td class="k">4</td><td>Fizyoterapist</td><td>"Fizyoterapist", "Fzt.", "PT", "Uzm. Fzt.", "Dr. Fzt."</td></tr>
+    <tr><td class="k">5</td><td>Kayropraktör (yurt dışı diploma, DC)</td><td>"Chiropractor", "DC", "Kayropraktör" unvanı; hekim ya da fizyoterapist değil</td></tr>
+    <tr><td class="k">6</td><td>Geleneksel / masör / "çıkıkçı" / spor eğitmeni</td><td>Sağlık meslek unvanı yok ama işi bunu yapmak</td></tr>
+    <tr><td class="k">7</td><td>Bireysel / eğlence / kendi kendine</td><td>İçerik üreticisi, kendi boynunu kütleten, şaka videosu</td></tr>
+    <tr><td class="k">8</td><td>Belirlenemiyor</td><td>Hiçbir yerde unvan yok, kim olduğu anlaşılmıyor</td></tr>
+  </table></div>
+  <h3>Karar kuralları</h3>
+  <ul>
+    <li><b>"Kayropraktik" kelimesi meslek göstermez.</b> Kanal "Fizyoterapist X — Kayropraktik" ise → <b>4</b>. "Kayropraktik sertifikalı" diyen hekim → <b>1–3</b>.</li>
+    <li><b>Hekim (1–3) yalnız tıp hekimi olduğu doğrulanabiliyorsa:</b> "Op. Dr.", "Uzm. Dr.", "Prof./Doç. Dr." + tıbbi branş ya da hastane künyesi.</li>
+    <li><b>"Dr." her zaman hekim değildir.</b> Dr. Fzt., Dr. Ody., doktoralı fizyoterapist, kanal adı "Dr. …" ama kişi fizyoterapist → hekim <b>sayılmaz</b>. "Dr. Fzt." → <b>4</b>.</li>
+    <li>"Fizik tedavi" ya da "fizyoterapi merkezi" adlı kanalda anlatanın kim olduğu belirsizse → <b>8</b>; kanal adını Açıklama'ya yazın.</li>
+    <li>Klinikte ekip varsa ve kütletmeyi yapan kişi tanıtılmıyorsa → <b>8</b>. Kanal sahibinin unvanını yapan kişiye taşımayın.</li>
+  </ul>
+  <div class="tbl"><table>
+    <tr><th>Videoda gördüğünüz</th><th>Kod</th></tr>
+    <tr><td>Kanal: "Fzt. Ahmet — Kayropraktik Uzmanı", uygulayan Ahmet</td><td class="k">4</td></tr>
+    <tr><td>Kanal: "Dr. Selin Kayropraktik", açıklamada "Dr. Fzt."</td><td class="k">4</td></tr>
+    <tr><td>Altyazı: "Uzm. Dr. …, Fiziksel Tıp ve Rehabilitasyon"</td><td class="k">1</td></tr>
+    <tr><td>TV kesiti, altyazıda "Op. Dr. …, Ortopedi", hastaya kütletme yapıyor</td><td class="k">2</td></tr>
+    <tr><td>Berber traş sonrası boyun kütletiyor</td><td class="k">6</td></tr>
+    <tr><td>Genç bir içerik üreticisi arkadaşının boynunu kütletiyor, kahkaha</td><td class="k">7</td></tr>
+    <tr><td>Yabancı kayropraktör videosu, Türkçe altyazılı yeniden yüklenmiş</td><td class="k">5 (dil kuralına uyuyorsa)</td></tr>
+  </table></div>
+  <h3>GETAT sertifikası anılıyor mu?</h3>
+  <p><b>Evet:</b> videoda, açıklamada ya da kanal adında "GETAT", "kayropraktik sertifikalı", "Sağlık Bakanlığı onaylı" ibaresi açıkça geçiyor. Yoksa <b>Hayır</b>. Doğru olup olmadığını araştırmayın; yalnız anılıp anılmadığını kodluyoruz.</p>
+</section>
+
+<section id="s63">
+  <h2>6.3 Video türü</h2>
+  <p>Tek seçim. Videonun <b>ana mesajına ve gösterim biçimine</b> göre seçin.</p>
+  <div class="tbl"><table>
+    <tr><th>No</th><th>Tür</th><th>Ne zaman</th></tr>
+    <tr><td class="k">1</td><td>Uygulama gösterimi</td><td>Uygulayıcı bir hastaya manipülasyon yapıyor (Shorts'ların çoğu)</td></tr>
+    <tr><td class="k">2</td><td>Anlatım</td><td>Konuşma ya da sunum ağırlıklı; uygulama yok ya da kısa</td></tr>
+    <tr><td class="k">3</td><td>Kendi kendine öğretim</td><td>İzleyiciye kendi boynunu ya da yakınının boynunu kütletmeyi öğretiyor</td></tr>
+    <tr><td class="k">4</td><td>Eğlence / tepki / mizah</td><td>Uygulama şaka, tepki ya da "challenge" biçiminde</td></tr>
+    <tr><td class="k">5</td><td>Uyarı / eleştiri</td><td>Ana mesaj kütletmenin riskleri ya da yanlış inanışlar</td></tr>
+  </table></div>
+  <ul>
+    <li>Uygulama gösterilip üstüne uzun bir anlatım yapılıyorsa: <b>videonun çoğu</b> neyse onu seçin.</li>
+    <li>Uyarı videosunda örnek olarak kütletme gösterilse bile ana mesaj uyarıysa → <b>5</b>.</li>
+    <li>3 seçtiyseniz 6.5'te <b>"Tehlikeli öneri"</b>yi de düşünün.</li>
+  </ul>
+</section>
+
+<section id="s64">
+  <h2>6.4 Gösteri öğeleri</h2>
+  <p>Çoklu seçim. Videoda <b>açıkça görülen</b> öğeleri işaretleyin; hiçbiri yoksa <b>"Hiçbiri"</b>.</p>
+  <div class="tbl"><table>
+    <tr><th>Formdaki seçenek</th><th>Ne zaman işaretlenir</th></tr>
+    <tr><td>Ses vurgusu</td><td>Ses yükseltilmiş, yaka mikrofonu boyuna yakın, ekranda "çıt!", ses efekti, "sese dikkat", "ASMR"</td></tr>
+    <tr><td>Abartılı tepki</td><td>Hastanın çığlığı, kahkahası; "imana geldi", "ruhu çıktı" tipi yazılar</td></tr>
+    <tr><td>Önce-sonra sunumu</td><td>Aynı videoda "önce/sonra" görüntüsü, ölçümü ya da beyanı (ör. baş dönüş açısı)</td></tr>
+    <tr><td>Hasta tanıklığı</td><td>Hastanın "geçti", "rahatladım", "duymaya başladım" gibi sözleri</td></tr>
+    <tr><td>Görüntüleme gösterimi</td><td>Röntgen ya da MR gösterilerek uygulamanın gerekçesi sunuluyor</td></tr>
+  </table></div>
+  <h3>Ses nasıl yorumlanıyor? (zorunlu, tek seçim)</h3>
+  <div class="tbl"><table>
+    <tr><th>Seçenek</th><th>Ne zaman</th></tr>
+    <tr><td>Ses yorumlanmıyor</td><td>Ses duyuluyor ya da duyulmuyor ama hakkında hiçbir şey söylenmiyor</td></tr>
+    <tr><td>Doğru</td><td>"Ses eklemdeki gaz kabarcığından gelir, başarının ölçüsü değildir"</td></tr>
+    <tr><td>Yanlış</td><td>Ses başarı ya da "yerine oturma" kanıtı gibi sunuluyor: "ses geldi, oldu", "kireç kırıldı", "tıkanıklık açıldı" → 6.7'de <b>"Ses başarının göstergesi"</b> vaadini de işaretleyin (kanıtıyla)</td></tr>
+  </table></div>
+  <p>Yalnız sesin vurgulanması (yüksek ses, "çıt" yazısı) "Yanlış" demek değildir; yorum gerekir. Vurgu varsa "Ses vurgusu"nu işaretleyip yorum yoksa "Ses yorumlanmıyor" seçin.</p>
+</section>
+
+<section id="s65">
+  <h2>6.5 Güvenlik</h2>
+  <p>Çoklu seçim. Hiçbiri yoksa <b>"Hiçbiri"</b>. Son iki seçenek <b>yanıltıcı</b> içeriktir.</p>
+  <div class="tbl"><table>
+    <tr><th>Formdaki seçenek</th><th>Ne zaman</th><th>Örnek</th></tr>
+    <tr><td>Risk anılıyor</td><td>Herhangi bir risk ya da yan etki</td><td>"Nadiren damar yaralanması olabilir", "sonrasında ağrı artabilir"</td></tr>
+    <tr><td>Kontrendikasyon / kimlere yapılmaz</td><td>Belirli hasta grupları sayılıyor</td><td>Osteoporoz, romatoid artrit, damar hastalığı, travma, çocuk</td></tr>
+    <tr><td>Öncesinde muayene/tetkik gerekir</td><td>Uygulama öncesi muayene ya da görüntüleme şart koşuluyor</td><td>"Önce muayene edip MR'a bakıyoruz"</td></tr>
+    <tr><td>Evde kendiniz yapmayın</td><td>Açık uyarı</td><td>"Bunu evde denemeyin"</td></tr>
+    <tr><td>Tehlikeli öneri (yanıltıcı)</td><td>Evde, kendi kendine ya da yakınına kütletme teşviki; boyun sıkıştırarak ya da çekerek uygulama tarifi</td><td>"Havluyu boynunuza dolayıp şöyle çekin"</td></tr>
+    <tr><td>Riski yok / tamamen güvenli (yanıltıcı)</td><td>Güvenlik iddiası</td><td>"Hiçbir riski yok", "%100 güvenli"</td></tr>
+  </table></div>
+  <ul>
+    <li>Ekranın köşesinde küçük "evde denemeyin" yazısı da sayılır; yeter ki okunabilsin.</li>
+    <li>Bir video hem "Evde kendiniz yapmayın" deyip hem de kendi kendine tarif veriyorsa ikisini de işaretleyin.</li>
+    <li>"Tehlikeli öneri" GQS'yi en fazla 2 ile sınırlar.</li>
+  </ul>
+</section>
+
+<section id="s66">
+  <h2>6.6 Ticari yönlendirme</h2>
+  <p>Çoklu seçim; videoda ya da açıklamada <b>görünen</b> yönlendirmeler. Hiçbiri yoksa <b>"Yok"</b>.</p>
+  <div class="formline"><span>Fiyat</span><span>Randevu / WhatsApp / telefon</span><span>Adres / klinik tanıtımı</span><span>Ürün satışı</span><span>Kurs / sertifika satışı</span><span>Yok</span></div>
+  <p>Örnek: açıklamada "Randevu için WhatsApp: 05xx…" → Randevu. Ekranda klinik logosu ve adresi → Adres / klinik tanıtımı. "Kayropraktik eğitimimize kayıtlar açıldı" → Kurs / sertifika satışı.</p>
+</section>
+
+<section id="s67">
+  <h2>6.7 Vaatler <span class="eyebrow" style="font-family:var(--f-body)">ana değişken</span></h2>
+  <p><b>Vaat nedir?</b> Manipülasyonun izleyici ya da hasta için <b>bir sonuç</b> sağlayacağını ya da <b>bir mekanizmayla</b> çalıştığını söyleyen ifade. Başlıkta, ekran yazısında, konuşmada, açıklamada ya da hasta tanıklığında geçebilir.</p>
+  <h3>Nasıl kodlanır</h3>
+  <ol class="steps">
+    <li>Videoda geçen her vaat için formdaki listede karşılığını bulup <b>"İşaretle"</b>yi seçin. Formda vaatler <b>1–26</b> diye numaralı; sınıf harfi görünmez.</li>
+    <li>Açılan <b>kanıt kutusuna</b> vaadin <b>nerede geçtiğini + kısa alıntıyı</b> yazın. Yer: başlık, ekran yazısı, konuşma, açıklama ya da hasta. Örnek: <code>ekran yazısı — 'atlas hizalandı, kulak açıldı'</code>. <b>Dakika yalnız 2 dakikadan uzun videolarda</b> yazılır: <code>3:15 konuşma — 'fıtığı içeri ittik'</code>. Kısa videolarda isteğe bağlıdır. Kanıtı boş vaat kaydedilmez.</li>
+    <li>Aynı vaat birkaç kez geçiyorsa bir kez işaretleyin, kanıta ilk ve en açık geçtiği yeri yazın.</li>
+    <li>Bir ifade iki vaadi birden taşıyorsa ikisini de işaretleyin ("Ses geldi, omur yerine oturdu" → yerine oturma + ses).</li>
+    <li>Listede karşılığı olmayan bir vaat varsa <b>26. Diğer vaat</b>'i seçip alıntıyı yazın; sınıfı uzlaşı turunda verilir. Pilotta bunları özellikle not edin, liste v2.0'da bunlarla genişleyecek.</li>
+    <li>Hiç vaat yoksa en üstteki <b>"Vaat yok"</b> kutusunu işaretleyin (yalnız uygulama ve ses varsa böyledir).</li>
+  </ol>
+  <div class="note"><b>Ölçülü dil mi, kesin dil mi?</b> Aynı konu iki sınıfa düşebilir. <b>Koşullu ve ölçülü</b> ("bir süre rahatlatabilir", "yardımcı olabilir") → A. <b>Kesin, kalıcı ya da hastalığı tedavi eden</b> dil ("bitirir", "kalıcı çözüm", "fıtığa son") → B. Kararsızsanız işaretleyin ve Açıklama'ya not düşün.</div>
+
+  <h3 id="vaatliste">Vaat listesi</h3>
+  <div class="search">
+    <label for="vaatAra"><b>Listede ara:</b></label>
+    <input id="vaatAra" type="search" placeholder="ör. kulak, fıtık, ses, tansiyon" autocomplete="off">
+    <small id="vaatSay"></small>
+  </div>
+
+  <div id="vaatTablolari">
+  <div class="classhead"><span class="chip cA">A</span><h3>Kanıtla uyumlu (abartısız)</h3><span>kısa süreli, ölçülü, programın parçası</span></div>
+  <div class="tbl"><table class="vt">
+    <tr><th>Form no</th><th>Kod</th><th>Vaat</th><th>Videoda duyabileceğiniz</th></tr>
+    <tr><td class="k">1</td><td><span class="chip cA">A1</span></td><td>Boyun ağrısında kısa süreli rahatlama</td><td>"Ağrınızı bir süre hafifletebilir", "rahatlama sağlar", "hastamız rahatladı"</td></tr>
+    <tr><td class="k">2</td><td><span class="chip cA">A2</span></td><td>Boyun hareketinde kısa süreli artış</td><td>"Boynunuz daha rahat döner", "hareket açıklığı arttı"</td></tr>
+    <tr><td class="k">3</td><td><span class="chip cA">A3</span></td><td>Boyun kaynaklı baş ağrısında kısa süreli azalma</td><td>"Boyundan kaynaklanan baş ağrısında yardımcı olabilir"</td></tr>
+    <tr><td class="k">4</td><td><span class="chip cA">A4</span></td><td>Egzersiz ya da tedavi programının parçası</td><td>"Tek başına yetmez, egzersizle birlikte", "tedavinin bir parçası"</td></tr>
+  </table></div>
+
+  <div class="classhead"><span class="chip cB">B</span><h3>Abartılı</h3><span>kas-iskelet sorunu, ama kanıtın ötesinde</span></div>
+  <div class="tbl"><table class="vt">
+    <tr><th>Form no</th><th>Kod</th><th>Vaat</th><th>Videoda duyabileceğiniz</th></tr>
+    <tr><td class="k">5</td><td><span class="chip cB">B1</span></td><td>Kalıcı ya da tek seansta çözüm</td><td>"Tek hareketle bitir", "bir seansta geçti", "kesin çözüm", "bir daha ağrımaz"</td></tr>
+    <tr><td class="k">6</td><td><span class="chip cB">B2</span></td><td>Boyun fıtığını tedavi etme, geri itme</td><td>"Fıtığı içeri ittik", "fıtığa son", "ameliyatsız fıtık tedavisi"</td></tr>
+    <tr><td class="k">7</td><td><span class="chip cB">B3</span></td><td>Boyun düzleşmesini, eğriliğini ya da duruşu düzeltme</td><td>"Boyun düzleşmesi düzeldi", "lordoz geri geldi", "duruşun düzeldi"</td></tr>
+    <tr><td class="k">8</td><td><span class="chip cB">B4</span></td><td>Kol uyuşması / sinir sıkışmasını tedavi</td><td>"Kol uyuşması gitti", "parmaklardaki karıncalanma bitti"</td></tr>
+    <tr><td class="k">9</td><td><span class="chip cB">B5</span></td><td>Baş dönmesi / vertigo tedavisi</td><td>"Baş dönmesine son", "vertigo geçti"</td></tr>
+    <tr><td class="k">10</td><td><span class="chip cB">B6</span></td><td>Baş ağrısını tür belirtmeden tedavi</td><td>"Baş ağrısı bitti", "baş ağrısına kesin çözüm"</td></tr>
+    <tr><td class="k">11</td><td><span class="chip cB">B7</span></td><td>Kireçlenme / spazm / kulunç tedavisi (kesin dille)</td><td>"Kireçlenmeyi çözdük", "kulunç yok oldu"</td></tr>
+  </table></div>
+
+  <div class="classhead"><span class="chip cC">C</span><h3>Kanıtla çelişen</h3><span>kontrollü çalışmalarda etki bulunmamış</span></div>
+  <div class="tbl"><table class="vt">
+    <tr><th>Form no</th><th>Kod</th><th>Vaat</th><th>Videoda duyabileceğiniz</th></tr>
+    <tr><td class="k">12</td><td><span class="chip cC">C1</span></td><td>Tansiyonu düşürme</td><td>"Tansiyonu düştü", "tansiyon hastalarına iyi gelir"</td></tr>
+    <tr><td class="k">13</td><td><span class="chip cC">C2</span></td><td>Migreni tedavi etme</td><td>"Migrene son", başlıkta "Migren hastamız"</td></tr>
+    <tr><td class="k">14</td><td><span class="chip cC">C3</span></td><td>Astım / solunum hastalığını düzeltme</td><td>"Nefesi açıldı, astımı düzeldi"</td></tr>
+    <tr><td class="k">15</td><td><span class="chip cC">C4</span></td><td>Bebek / çocuk hastalıklarını tedavi</td><td>"Bebeğin gazı/koliği geçti"</td></tr>
+    <tr><td class="k">16</td><td><span class="chip cC">C5</span></td><td>Adet sancısı / jinekolojik sorunlar</td><td>"Adet sancısına iyi gelir"</td></tr>
+  </table></div>
+
+  <div class="classhead"><span class="chip cD">D</span><h3>Dayanaksız</h3><span>destekleyen kontrollü kanıt yok; mekanizma iddiaları dahil</span></div>
+  <div class="tbl"><table class="vt">
+    <tr><th>Form no</th><th>Kod</th><th>Vaat</th><th>Videoda duyabileceğiniz</th></tr>
+    <tr><td class="k">17</td><td><span class="chip cD">D1</span></td><td>İşitme kaybı, kulak tıkanıklığı, çınlama</td><td>"Kulak açıldı", "işitme düzeldi", "çınlama kesildi", "Atlas terapi ve işitme kaybı"</td></tr>
+    <tr><td class="k">18</td><td><span class="chip cD">D2</span></td><td>Görme, göz sorunları</td><td>"Gözleri açıldı", "bulanık görme geçti"</td></tr>
+    <tr><td class="k">19</td><td><span class="chip cD">D3</span></td><td>Reflü, mide-bağırsak, sindirim</td><td>"Reflüsü düzeldi"</td></tr>
+    <tr><td class="k">20</td><td><span class="chip cD">D4</span></td><td>Uyku, kaygı, depresyon, stres, odaklanma</td><td>"Stresi attı", "uykusu düzeldi", "panik atağa iyi gelir"</td></tr>
+    <tr><td class="k">21</td><td><span class="chip cD">D5</span></td><td>Bağışıklık, enerji, toksin atma, genel sağlık</td><td>"Bağışıklığı güçlendirir", "enerji geldi", "toksin attı"</td></tr>
+    <tr><td class="k">22</td><td><span class="chip cD">D6</span></td><td>Omur yerine oturdu / atlas hizalandı</td><td>"Kayma düzeldi", "atlas hizalandı", "omur yerine oturdu"</td></tr>
+    <tr><td class="k">23</td><td><span class="chip cD">D7</span></td><td>Ses başarının göstergesi</td><td>"Ses geldi oldu", "kireç kırıldı", "tıkanıklık açıldı"</td></tr>
+    <tr><td class="k">24</td><td><span class="chip cD">D8</span></td><td>Sinir sıkışmasını / kan akımını açma (mekanizma)</td><td>"Sinir sıkışmasını açtım", "beyne giden kanı açtım"</td></tr>
+    <tr><td class="k">25</td><td><span class="chip cD">D9</span></td><td>Diğer kas-iskelet dışı hastalık</td><td>Şeker, tiroid, kalp ya da nörolojik hastalık vaadi</td></tr>
+  </table></div>
+
+  <div class="classhead"><span class="chip cZ">Z</span><h3>Diğer</h3><span>listede yok</span></div>
+  <div class="tbl"><table class="vt">
+    <tr><th>Form no</th><th>Kod</th><th>Vaat</th><th>Ne yapılır</th></tr>
+    <tr><td class="k">26</td><td><span class="chip cZ">Z</span></td><td>Diğer vaat</td><td>Alıntıyı yazın; sınıfı uzlaşı turunda kanıt haritasına göre verilir</td></tr>
+  </table></div>
+  </div>
+  <p id="vaatYok" hidden>Bu sözcükle eşleşen vaat yok. Videodaki ifade listede yoksa <b>26. Diğer vaat</b>'i kullanın.</p>
+
+  <div class="note"><b>Eleştiri ve aktarma.</b> Vaat, videonun kendisinin <b>doğru diye sunduğu</b> iddiadır. Başkasının iddiası aktarılıp <b>reddediliyorsa</b> vaat değildir. Eleştiri, videonun kendi verdiği vaadi silmez. Reddedilmeden gösterilen iddia vaat sayılır. Net değilse en yakın seçenek + Açıklama.</div>
+
+  <h3 id="sinirda">Sınırda durumlar</h3>
+  <div class="tbl"><table>
+    <tr><th>Videoda</th><th>İşaretlenecek</th><th>Neden</th></tr>
+    <tr><td>"Boyun tutulması olan hastamız uygulamadan sonra rahatladı"</td><td><span class="chip cA">A1</span></td><td>Sonuç kısa süreli rahatlama, kesin/kalıcı dil yok</td></tr>
+    <tr><td>"Boyun düzleşmesini tek hareketle bitir"</td><td><span class="chip cB">B1</span> + <span class="chip cB">B3</span></td><td>Tek seans + duruş düzeltme</td></tr>
+    <tr><td>Başlık: "Atlas terapi ile işitme kaybı"</td><td><span class="chip cD">D1</span> + <span class="chip cD">D6</span></td><td>Başlık izleyiciye işitme vaadi verir; "atlas" yapısal düzeltme iması</td></tr>
+    <tr><td>"Ses geldi, omur yerine oturdu"</td><td><span class="chip cD">D6</span> + <span class="chip cD">D7</span></td><td>Ses yorumu = Yanlış (6.4)</td></tr>
+    <tr><td>"Ses eklemdeki gazdan gelir, önemli olan ses değil"</td><td>Vaat yok</td><td>6.4'te ses yorumu = Doğru</td></tr>
+    <tr><td>Başlık: "Migren hastamız", başka söz yok</td><td><span class="chip cC">C2</span></td><td>Başlık, manipülasyonun migrene iyi geldiğini ima ediyor</td></tr>
+    <tr><td>Hasta "kulağım açıldı" diyor, uygulayıcı düzeltmiyor</td><td><span class="chip cD">D1</span></td><td>Tanıklık da vaattir; 6.4'te Hasta tanıklığı</td></tr>
+    <tr><td>Hiç konuşma ya da yazı yok, yalnız uygulama ve ses</td><td>Vaat yok</td><td>6.4'te Ses vurgusu varsa işaretleyin</td></tr>
+    <tr><td>"Fıtığı olanlar mutlaka manipülasyon yaptırsın, ameliyata gerek kalmaz"</td><td><span class="chip cB">B2</span></td><td>Fıtığı tedavi etme iddiası</td></tr>
+    <tr><td>"Boyun ağrısı için egzersizle birlikte kısa süre rahatlatabilir"</td><td><span class="chip cA">A1</span> + <span class="chip cA">A4</span></td><td>Ölçülü + programın parçası</td></tr>
+    <tr><td>"Baş dönmesi olan hastamız, bakalım ne olacak" (sonuç söylenmiyor)</td><td>Vaat yok</td><td>Sonuç ya da mekanizma iddiası yok; kararsızsanız Açıklama</td></tr>
+    <tr><td>Uyarı videosu: "Kütletme kulak açar diyorlar, bu doğru değil"</td><td>Vaat yok</td><td>İddia aktarılıp reddediliyor; tür = Uyarı</td></tr>
+    <tr><td>Eleştiri videosu başkasının kesitini gösterip reddediyor (kesitte "fıtığı ittik")</td><td>Vaat yok</td><td>Kesit reddedildiği sürece vaat sayılmaz</td></tr>
+    <tr><td>"Çıkıkçılar yanlış yapıyor, bizim tekniğimizle fıtık geçer"</td><td><span class="chip cB">B2</span></td><td>Eleştiri, videonun kendi vaadini ortadan kaldırmaz</td></tr>
+    <tr><td>Kesit gösteriliyor ama reddedilmiyor ("ilginç" deyip geçiliyor)</td><td>Kesitteki vaat kodlanır</td><td>İzleyici iddiayı düzeltilmeden duyuyor</td></tr>
+  </table></div>
+</section>
+
+<section id="s68">
+  <h2>6.8 mDISCERN <span class="meta">güvenilirlik, 0–5</span></h2>
+  <p>Singh ve ark. 2012. Beş soru, her biri <b>Evet = 1</b>, <b>Hayır = 0</b>. Toplamı form hesaplar ("mDISCERN toplamı").</p>
+  <div class="tbl"><table>
+    <tr><th>Formdaki soru</th><th>Kendinize sorun</th><th><span class="ok">Evet</span> için</th><th><span class="no">Hayır</span> örneği</th></tr>
+    <tr><td><b>Amaç açık mı?</b></td><td>"Videonun ne anlatacağını başta anladım mı, ve video bunu yaptı mı?"</td><td>İkisi de evet</td><td>Başlık "Boyun fıtığı tedavisi", video yalnız müzikli kütletme</td></tr>
+    <tr><td><b>Güvenilir kaynak belirtilmiş mi?</b></td><td>"Adı ve unvanı belli bir <b>hekim ya da fizyoterapist</b> mi?"</td><td>Unvan tek başına yeter; mesleğe göre fark gözetilmez</td><td>Unvansız anlatıcı; "araştırmalar gösteriyor" deyip kaynak vermemek</td></tr>
+    <tr><td><b>Bilgi dengeli mi?</b></td><td>"Yararın yanında <b>en az bir risk ya da sınır</b> anıldı mı?"</td><td>"Herkese uygun değil", "bazen ağrı artabilir"</td><td>Hiç risk ya da sınır yok → Hayır (Shorts'ların çoğu)</td></tr>
+    <tr><td><b>Ek kaynak gösteriliyor mu?</b></td><td>"İzleyiciye <b>somut</b> bir okuma yeri gösterildi mi?"</td><td>Kılavuz, makale, dernek sitesi bağlantısı</td><td>Yalnız "doktorunuza danışın"; randevu/WhatsApp bağlantısı kaynak sayılmaz</td></tr>
+    <tr><td><b>Belirsizlik belirtilmiş mi?</b></td><td>"Herkeste aynı olmayan ya da kesin olmayan bir nokta söylendi mi?"</td><td>"Herkeste aynı sonucu vermez", "etkisi kısa sürebilir"</td><td>Her şey kesin ve herkes için aynı anlatılıyor</td></tr>
+  </table></div>
+  <div class="grid2">
+    <div class="card"><h4>Örnek: 20 sn Shorts</h4><p>"Fzt. X" kanalı; ekranda "Boyun düzleşmesine tek seansta çözüm"; risk, kaynak, belirsizlik yok.</p><p>Amaç <span class="ok">1</span> · Kaynak <span class="ok">1</span> (unvan) · Denge <span class="no">0</span> · Ek kaynak <span class="no">0</span> · Belirsizlik <span class="no">0</span> → <b>2</b></p></div>
+    <div class="card"><h4>Örnek: 6 dk uyarı videosu</h4><p>FTR uzmanı (altyazıda), kimlere yapılmayacağını sayıyor, "kısa süreli rahatlama sağlayabilir ama herkeste değil" diyor, kaynak göstermiyor.</p><p>1 · 1 · 1 · 0 · 1 → <b>4</b></p></div>
+  </div>
+  <p>Kısa videolar aynı kurallarla puanlanır; kısa olduğu için puan eklenmez. 15 saniyelik videoların çoğunun düşük alması beklenir.</p>
+</section>
+
+<section id="s69">
+  <h2>6.9 JAMA <span class="meta">şeffaflık, 0–4</span></h2>
+  <p>Silberg ve ark. 1997. Bilginin doğru olup olmadığını değil, <b>kimin, neye dayanarak, kimin parasıyla ve ne zaman</b> söylediğinin açık olup olmadığını ölçer. Her biri <b>Var = 1</b>, <b>Yok = 0</b>. Video ve açıklama birlikte değerlendirilir.</p>
+  <div class="tbl"><table>
+    <tr><th>Formdaki ölçüt</th><th><span class="ok">Var</span> örneği</th><th><span class="no">Yok</span> örneği</th></tr>
+    <tr><td><b>Yazarlık</b> — ad ve unvan/kurum</td><td>Altyazıda "Uzm. Fzt. …"; anlatan kendini adı ve unvanıyla tanıtıyor; kanal adı kişinin adı + unvanı ve anlatan o</td><td>Yalnız klinik adı; ad var unvan yok; kimin uyguladığı belli değil</td></tr>
+    <tr><td><b>Kaynak</b> — bilimsel kaynak</td><td>"Cochrane derlemesine göre…"; açıklamada makale bağlantısı; ekranda "Kaynak: …"</td><td>"Bilimsel olarak kanıtlanmıştır" deyip kaynak vermemek</td></tr>
+    <tr><td><b>Açıklama</b> — sponsor/reklam/çıkar beyanı</td><td>YouTube'un "Ücretli tanıtım içerir" etiketi; "bu ürünle ticari ilişkim yok"</td><td>Beyan yok (videoların çoğu); klinik tanıtılıyor ama ilişki belirtilmiyor</td></tr>
+    <tr><td><b>Güncellik</b> — içeriğin tarihi</td><td>"2024 kılavuzuna göre", "güncelleme: …"</td><td>Yalnız YouTube'un yükleme tarihi (<b>sayılmaz</b>)</td></tr>
+  </table></div>
+  <div class="tip"><b>Bakılacak üç yer:</b> (1) videonun başı ve sonu (isim-unvan şeridi, kendini tanıtma), (2) video boyunca ekran yazıları (kaynak notu, "iş birliği" etiketi), (3) "Video açıklaması" kutusu. Videoların çoğunun 0–1 alması beklenir; düşük puan normaldir.</div>
+</section>
+
+<section id="s610">
+  <h2>6.10 GQS <span class="meta">genel kalite, 1–5</span></h2>
+  <p>Bernard ve ark. 2007. Formdaki soru: <b>"Boyun ağrısı için bilgi arayan bir hasta için bu video ne kadar kaliteli ve yararlı?"</b> Akış, anlaşılırlık ve kapsam birlikte değerlendirilir.</p>
+  <div class="tbl"><table>
+    <tr><th>Puan</th><th>Formda</th><th>Tanım</th></tr>
+    <tr><td class="k">1</td><td>Çok düşük</td><td>Kalite çok düşük, bilgi neredeyse yok; hasta için yararsız</td></tr>
+    <tr><td class="k">2</td><td>Düşük</td><td>Bazı bilgiler var ama önemli konuların çoğu eksik; çok sınırlı yararlı</td></tr>
+    <tr><td class="k">3</td><td>Orta</td><td>Bazı önemli bilgiler yeterli, bazıları yetersiz; kısmen yararlı</td></tr>
+    <tr><td class="k">4</td><td>İyi</td><td>İlgili bilgilerin çoğu var, akış iyi; yararlı</td></tr>
+    <tr><td class="k">5</td><td>Mükemmel</td><td>Akış ve kapsam çok iyi; çok yararlı (nadir)</td></tr>
+  </table></div>
+  <h3>3'ten başlayın</h3>
+  <ol class="steps">
+    <li><b>4'e çıkmak için:</b> video kendi konusunu doğru, düzenli ve anlaşılır anlatıyor, ana noktaların çoğu var.</li>
+    <li><b>5 için:</b> buna ek olarak sade dil, hastanın ne yapması gerektiği (kimlere uygun değil, ne zaman hekime gitmeli) açık, önemli eksik yok.</li>
+    <li><b>2'ye inmek için:</b> bilgi dağınık, yüzeysel ya da önemli kısımlar eksik; hasta izledikten sonra pek bir şey öğrenmiyor.</li>
+    <li><b>1 için:</b> bilgi neredeyse hiç yok (yalnız uygulama + müzik, tanıtım, şaka) ya da çoğu yanlış.</li>
+  </ol>
+  <div class="note"><b>Sınır kuralı.</b> C ya da D sınıfı bir vaat (form no 12–25) <b>ya da</b> 6.5'te "Tehlikeli öneri" varsa GQS <b>en fazla 2</b>. Form 3 ve üstüne izin vermez, uyarı gösterir.</div>
+  <div class="tbl"><table>
+    <tr><th>Video</th><th>GQS</th></tr>
+    <tr><td>15 sn, müzik eşliğinde kütletme, hiç bilgi yok</td><td class="k">1</td></tr>
+    <tr><td>30 sn, "boyun ağrısına kısa süreli rahatlama sağlayabilir" + uygulama, başka bilgi yok</td><td class="k">2</td></tr>
+    <tr><td>45 sn, "Atlas düzeltme ile kulak çınlaması bitti" (D vaadi)</td><td class="k">1–2</td></tr>
+    <tr><td>5 dk, FTR uzmanı: kimlere yapılır/yapılmaz, riskler, egzersizle birlikte, sade dil</td><td class="k">4–5</td></tr>
+    <tr><td>3 dk, akıcı anlatım ama "evde havluyla siz de yapın" tarifi</td><td class="k">en fazla 2</td></tr>
+  </table></div>
+</section>
+
+<section id="s611">
+  <h2>6.11 Açıklama</h2>
+  <p>Kararsız kaldığınız her şeyi buraya yazın: hangi iki seçenek arasında kaldığınız, listede olmayan bir durum, belirsiz bir unvan, kuralın işlemediği bir yer. Hariç nedeni "Diğer" ise burası zorunludur. Pilotta bu kutu en değerli veridir; kılavuz v2.0 buradan güncellenecek.</p>
+  <div class="ex">Uygulayıcı: kanal "Dr. Mert Kayropraktik", açıklamada unvan yok → 8 seçtim, 3 de olabilir.
+Vaat: "boyundaki tıkanıklığı açtık" → D8 mi Z mi emin değilim.</div>
+</section>
+
+<section id="ornek">
+  <h2>Baştan sona örnek</h2>
+  <p class="meta">Uydurma bir örnek; gerçek bir videoyu anlatmıyor.</p>
+  <p><b>Video:</b> 38 sn Shorts. Kanal "Fzt. Burak Yılmaz | Kayropraktik". Başlık: <i>"Boyun düzleşmesi ve kulak çınlaması 🔥 tek seans"</i>. Ses yüksek, ekranda "ÇIT!" yazısı. Hasta kütletmeden sonra "kulağımdaki uğultu gitti" diyor. 0:21'de ekran yazısı: "ses geldi = omur yerine oturdu". Açıklamada "Randevu: WhatsApp 05xx". Risk ya da uyarı yok.</p>
+  <div class="tbl"><table>
+    <tr><th>Soru</th><th>Cevap</th><th>Gerekçe</th></tr>
+    <tr><td>6.1 Dahil mi?</td><td>Evet</td><td>Boyuna kütletme gösteriliyor, Türkçe</td></tr>
+    <tr><td>6.2 Uygulayıcı</td><td>4. Fizyoterapist</td><td>Kanal adında "Fzt."; "Kayropraktik" meslek değildir</td></tr>
+    <tr><td>GETAT</td><td>Hayır</td><td>Sertifika ibaresi yok</td></tr>
+    <tr><td>6.3 Tür</td><td>1. Uygulama gösterimi</td><td>Hastaya uygulama</td></tr>
+    <tr><td>6.4 Gösteri</td><td>Ses vurgusu, Hasta tanıklığı</td><td>"ÇIT!" yazısı; "uğultu gitti"</td></tr>
+    <tr><td>Ses yorumu</td><td>Yanlış</td><td>"ses geldi = omur yerine oturdu"</td></tr>
+    <tr><td>6.5 Güvenlik</td><td>Hiçbiri</td><td>Risk/uyarı yok</td></tr>
+    <tr><td>6.6 Ticari</td><td>Randevu / WhatsApp / telefon</td><td>Açıklamada WhatsApp</td></tr>
+    <tr><td rowspan="5">6.7 Vaatler</td><td>5. Kalıcı ya da tek seansta çözüm</td><td class="mono">başlık — 'tek seans'</td></tr>
+    <tr><td>7. Boyun düzleşmesini … düzeltme</td><td class="mono">başlık — 'boyun düzleşmesi'</td></tr>
+    <tr><td>17. İşitme kaybı, kulak tıkanıklığı, çınlama</td><td class="mono">başlık — 'kulak çınlaması'; hasta — 'kulağımdaki uğultu gitti'</td></tr>
+    <tr><td>22. Omur yerine oturdu</td><td class="mono">ekran yazısı — 'omur yerine oturdu'</td></tr>
+    <tr><td>23. Ses başarının göstergesi</td><td class="mono">ekran yazısı — 'ses geldi = omur yerine oturdu'</td></tr>
+    <tr><td>6.8 mDISCERN</td><td>1 · 1 · 0 · 0 · 0 = <b>2</b></td><td>Amaç açık; unvan var; risk yok; kaynak yok; her şey kesin</td></tr>
+    <tr><td>6.9 JAMA</td><td>1 · 0 · 0 · 0 = <b>1</b></td><td>Kanal adı kişinin adı + unvanı ve uygulayan o → Yazarlık var; kaynak, beyan, içerik tarihi yok</td></tr>
+    <tr><td>6.10 GQS</td><td><b>1</b></td><td>D vaadi var (sınır 2); bilgi neredeyse yok</td></tr>
+  </table></div>
+  <p>Form arka planda bu videoya şunu yazar: vaat sayısı 5, en yüksek sınıf D, kanıt dışı vaat var. Bunları siz görmezsiniz.</p>
+</section>
+
+<section id="kart">
+  <h2>Hızlı başvuru kartı</h2>
+  <div class="tbl"><table>
+    <tr><th>Soru</th><th>Kısa kural</th></tr>
+    <tr><td>Dahil mi?</td><td>Boyuna kütletme/itme gösteriliyor ya da anlatılıyor mu? Yalnız egzersiz, masaj, bel → hariç. Türkçe konuşma ya da yazı yoksa → hariç</td></tr>
+    <tr><td>Uygulayıcı</td><td>Uygulayana göre. "Kayropraktik" kelimesi meslek değil. Dr. Fzt. = 4. Hekim yalnız doğrulanabiliyorsa</td></tr>
+    <tr><td>Video türü</td><td>Gösterim / anlatım / kendi kendine / eğlence / uyarı</td></tr>
+    <tr><td>Gösteri</td><td>Ses vurgusu, tepki, önce-sonra, tanıklık, görüntüleme; ses yorumu zorunlu (yanlışsa no 23 de)</td></tr>
+    <tr><td>Güvenlik</td><td>Risk, kontrendikasyon, muayene, "evde yapmayın". Tehlikeli öneri ve "riski yok" yanıltıcı</td></tr>
+    <tr><td>Ticari</td><td>Fiyat, randevu, adres, ürün, kurs; yoksa "Yok"</td></tr>
+    <tr><td>Vaatler</td><td>Her vaat için listeden işaretle + yer ve alıntı (dakika yalnız 2 dk'dan uzun videoda). Ölçülü → 1–4; kesin/kalıcı/tedavi → 5–11; tansiyon, migren, astım → 12–16; işitme, görme, "yerine oturdu", "ses geldi oldu" → 17–25; yoksa 26</td></tr>
+    <tr><td>mDISCERN</td><td>Amaç · unvan · en az bir risk/sınır · somut kaynak · belirsizlik</td></tr>
+    <tr><td>JAMA</td><td>Ad+unvan · bilimsel kaynak · çıkar beyanı · içerik tarihi (yükleme tarihi sayılmaz)</td></tr>
+    <tr><td>GQS</td><td>3'ten başla; C/D vaadi (12–25) ya da tehlikeli öneri varsa en fazla 2</td></tr>
+    <tr><td>Kararsızsan</td><td>En yakın seçenek + Açıklama kutusu</td></tr>
+  </table></div>
+</section>
+
+<section id="kanit">
+  <h2>Kanıt haritası</h2>
+  <p>Vaat sınıflarının dayanağı. Kodlarken bilmeniz gerekmez; bir vaadin neden o sınıfta olduğunu merak ederseniz buraya bakın.</p>
+  <div class="tbl"><table>
+    <tr><th>Başlık</th><th>Kaynak</th><th>Bulgu</th><th>Sınıf</th></tr>
+    <tr><td>Boyun ağrısı</td><td>Gross ve ark. Cochrane 2015 (CD004249); Carrasco-Uribarren 2024</td><td>Etkisiz kontrole karşı kanıt az; tek seansın etkisi hemen sonrasıyla sınırlı; düşük/çok düşük kesinlik</td><td>Kısa süreli <span class="chip cA">A</span>, kalıcı/tek seans <span class="chip cB">B</span></td></tr>
+    <tr><td>Servikojenik baş ağrısı</td><td>Gross 2015; sham kontrollü MA 2022</td><td>Kısa dönemde sham'dan iyi, uzun dönemde fark yok</td><td>Kısa süreli <span class="chip cA">A</span>, türsüz "biter" <span class="chip cB">B</span></td></tr>
+    <tr><td>Servikal radikülopati</td><td>Plener ve ark. 2023</td><td>Belirli bir teknik için etki kesin değil</td><td><span class="chip cB">B</span></td></tr>
+    <tr><td>Servikojenik baş dönmesi</td><td>De Vestel ve ark. 2022; 2025 MA</td><td>Tanı ölçütleri ve teknikler değişken</td><td>Kesin dille <span class="chip cB">B</span></td></tr>
+    <tr><td>Kas-iskelet dışı</td><td>Côté ve ark. 2021</td><td>Hipertansiyon, migren, astım, kolik, dismenore: sham'a üstünlük yok</td><td><span class="chip cC">C</span></td></tr>
+    <tr><td>İşitme, tinnitus, görme, reflü, bağışıklık vb.</td><td>Côté 2021</td><td>Kontrollü kanıt yok</td><td><span class="chip cD">D</span></td></tr>
+    <tr><td>Kütleme sesi</td><td>Moorman ve Newell 2022</td><td>Sesin varlığı ağrı sonucunu öngörmüyor</td><td>"Ses = başarı" <span class="chip cD">D</span></td></tr>
+    <tr><td>"Omur yerine oturtma"</td><td>Biyomekanik SD 2025</td><td>Hareket değişimi omurun "yerine oturması" demek değil</td><td><span class="chip cD">D</span></td></tr>
+    <tr><td>Güvenlik</td><td>Pankrath 2024; Cassidy 2008; IFOMPT çerçevesi</td><td>Hafif yan etkiler sık; nadir ciddi risk (arter diseksiyonu) nicelenemiyor</td><td>"Riski yok" yanıltıcı (6.5)</td></tr>
+  </table></div>
+</section>
+</main>
+</div>
+
+<script>
+(function(){
+  var input=document.getElementById('vaatAra'),say=document.getElementById('vaatSay'),yok=document.getElementById('vaatYok');
+  if(!input)return;
+  var norm=function(s){return s.toLocaleLowerCase('tr').normalize('NFC')};
+  var rows=[].slice.call(document.querySelectorAll('#vaatTablolari table.vt tr')).filter(function(r){return !r.querySelector('th')});
+  function filtre(){
+    var q=norm(input.value.trim()),n=0;
+    rows.forEach(function(r){var hit=!q||norm(r.textContent).indexOf(q)>-1;r.hidden=!hit;if(hit)n++});
+    document.querySelectorAll('#vaatTablolari .tbl').forEach(function(t){
+      var vis=[].some.call(t.querySelectorAll('tr'),function(r){return !r.querySelector('th')&&!r.hidden});
+      t.hidden=!vis; var h=t.previousElementSibling; if(h&&h.classList.contains('classhead'))h.hidden=!vis;
+    });
+    say.textContent=q?n+' vaat':'26 vaat';
+    yok.hidden=!(q&&n===0);
+  }
+  input.addEventListener('input',filtre);filtre();
+})();
+</script>
+</body></html>
